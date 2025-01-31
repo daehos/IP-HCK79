@@ -3,6 +3,7 @@ const { signToken } = require("../helpers/jwt");
 const { User } = require("../models");
 const { OAuth2Client } = require("google-auth-library");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 module.exports = class userController {
   static async register(req, res, next) {
     try {
@@ -53,7 +54,7 @@ module.exports = class userController {
   static async googleLogin(req, res, next) {
     try {
       // hooks option
-      const { googletoken } = req.headers;
+      const { googletoken } = req.body;
 
       const client = new OAuth2Client();
 
@@ -73,6 +74,7 @@ module.exports = class userController {
       if (!user) {
         user = await User.create(
           {
+            name: payload.name,
             email: payload.email,
             password: "googlelogin",
           },
